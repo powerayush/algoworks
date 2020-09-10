@@ -7,9 +7,10 @@ const cryptr = new Cryptr('myTotalySecretKey');
 const postsTable = process.env.POSTS_TABLE;
 const usersTable = process.env.USERS_TABLE;
 const SES = new AWS.SES();
-const config = require('./config.js')
+require('dotenv').config()
 var jwt = require('jsonwebtoken');
 
+const secret = process.env.JWT_SECRET
 
 // Create a response
 function response(statusCode, message) {
@@ -28,11 +29,11 @@ var sendEmail = (email) => {
       },
       Message: {
         Body: {
-          Text: { Data: "Welcome, your are successfully registered. Use /user/login api to get access token and use other APIs" },
+          Text: { Data: "Welcome, your are successfully registered. Use /user/login api to get access token and use other APIs." },
         },
         Subject: { Data: "Registered with algoworks" },
       },
-      Source: "gupta11ay@gmail.com",
+      Source: process.env.EMAIL,
     };
 
     try {
@@ -55,7 +56,7 @@ function authentication(request) {
       resp.message = 'No token provided.';
       resolve(resp);
     }
-    jwt.verify(token, config.secret, function (err, decoded) {
+    jwt.verify(token, secret, function (err, decoded) {
       if (err) {
         resp.statusCode = 401;
         resp.message = 'Failed to authenticate token';
@@ -124,7 +125,7 @@ module.exports.registerUser = (event, context, callback) => {
           .then(async () => {
             const mesg = await sendEmail(reqBody.email)
 
-            callback(null, response(200, mesg));
+            callback(null, response(200, { message: mesg }));
 
           })
           .catch((err) => callback(null, response(err.statusCode, err)));
@@ -163,14 +164,14 @@ module.exports.loginUser = (event, context, callback) => {
     .then((res) => {
       if (res.Item) {
         if (reqBody.password === cryptr.decrypt(res.Item.password)) {
-          const token = jwt.sign({ email: reqBody.email }, config.secret, {
+          const token = jwt.sign({ email: reqBody.email }, secret, {
             expiresIn: 3600 // expires in 1 hour
           });
           const mesg = {
             message: "Hurray, you are logged in, use the token for further APIs",
             token: token
           }
-          callback(null, response(200, mesg))
+          callback(null, response(200, { message: mesg }))
         } else {
           callback(null, response(404, { message: 'Login failed! Please, enter the correct password ' }))
         }
@@ -260,7 +261,7 @@ module.exports.updateUser = async (event, context, callback) => {
       .update(params)
       .promise()
       .then((res) => {
-        callback(null, response(200,'The password is updated'));
+        callback(null, response(200, { message: 'The password is updated' }));
       })
       .catch((err) => callback(null, response(err.statusCode, err)));
   } else {
