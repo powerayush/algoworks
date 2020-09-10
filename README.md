@@ -80,3 +80,5 @@ Delete the particular post
 1. Register the email in AWS if you are using trial AWS account to use SES service.
 
 2. Postman Collection to try out the APIs- https://www.getpostman.com/collections/832e5a28ec482ffb87b0
+
+3. Create .env file with fields JWT_SECRET and EMAIL
