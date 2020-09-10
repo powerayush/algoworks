@@ -6,10 +6,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "gupta11ay@gmail.com",
+  "author": "ayush gupta <gupta11ay@gmail.com>",
   "license": "ISC",
   "dependencies": {
     "cryptr": "^6.0.2",
+    "dotenv": "^8.2.0",
     "jsonwebtoken": "^8.5.1",
     "uuid": "^8.3.0"
   }
