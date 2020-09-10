@@ -1,0 +1,16 @@
+{
+  "name": "algoworks",
+  "version": "1.0.0",
+  "description": "User-post Management system",
+  "main": "handle.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "gupta11ay@gmail.com",
+  "license": "ISC",
+  "dependencies": {
+    "cryptr": "^6.0.2",
+    "jsonwebtoken": "^8.5.1",
+    "uuid": "^8.3.0"
+  }
+}
